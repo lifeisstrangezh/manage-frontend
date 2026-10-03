@@ -12,7 +12,7 @@
         <BasicTree
           v-model:value="model[field]"
           :treeData="treeData"
-          :fieldNames="{ title: 'name', key: 'id' }"
+          :fieldNames="{ title: 'name', key: 'key' }"
           checkable
           toolbar
           title="角色列表"
@@ -51,7 +51,10 @@
         setDrawerProps({ confirmLoading: false });
         // 需要在setFieldsValue之前先填充treeData，否则Tree组件可能会报key not exist警告
         if (unref(treeData).length === 0) {
-          treeData.value = (await getRoleListByPage()) as any as TreeItem[];
+          const roleList = (await getRoleListByPage()) as any as TreeItem[];
+          // 单独提供 key 字段：BasicTree 渲染时会把 title 字段回写成 VNode，
+          // 若 key 与 title 同为 'name' 会导致节点 key 被覆盖，从而无法回显选中
+          treeData.value = roleList.map((item) => ({ ...item, key: item.name }));
         }
         isUpdate.value = !!data?.isUpdate;
 
@@ -71,7 +74,7 @@
 
           const params = {
             ...values,
-            role: JSON.stringify(values.role.map(id => treeData.value.find(tree => tree.id === id).name))
+            role: JSON.stringify(values.role || []),
           }
 
           const update = unref(isUpdate)

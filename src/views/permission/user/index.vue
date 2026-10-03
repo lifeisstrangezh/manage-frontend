@@ -33,7 +33,7 @@
   import { defineComponent } from 'vue';
 
   import { BasicTable, useTable, TableAction } from '/@/components/Table';
-  import { getUserList } from '/@/api/sys/user';
+  import { getUserList, deleteUser } from '/@/api/sys/user';
 
   import { useDrawer } from '/@/components/Drawer';
   import RoleDrawer from './RoleDrawer.vue';
@@ -73,14 +73,23 @@
       }
 
       function handleEdit(record: Recordable) {
+        const role = record.role ? JSON.parse(record.role) : [];
         openDrawer(true, {
-          record,
+          record: {
+            ...record,
+            role,
+          },
           isUpdate: true,
         });
       }
 
-      function handleDelete(record: Recordable) {
+      async function handleDelete(record: Recordable) {
         console.log(record);
+        const params = {
+          id: record.id,
+        }
+        await deleteUser(params);
+        reload();
       }
 
       function handleSuccess() {

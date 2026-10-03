@@ -24,6 +24,10 @@ export function editUser(data) {
   return defHttp.put<GetUserInfoModel>({ url: Api.User, data });
 }
 
+export function deleteUser(data) {
+  return defHttp.delete<GetUserInfoModel>({ url: Api.User, data });
+}
+
 /**
  * @description: user login api
  */

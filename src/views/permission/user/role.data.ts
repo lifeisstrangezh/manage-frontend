@@ -1,6 +1,8 @@
 import { BasicColumn, FormSchema } from '/@/components/Table';
 import { h, unref } from 'vue';
 import { Switch } from 'ant-design-vue';
+import { editUser } from '/@/api/sys/user';
+import { useMessage } from '/@/hooks/web/useMessage';
 
 export const columns: BasicColumn[] = [
   {
@@ -45,6 +47,22 @@ export const columns: BasicColumn[] = [
         checkedChildren: '已启用',
         unCheckedChildren: '已禁用',
         loading: record.pendingStatus,
+        onChange(checked: boolean) {
+          record.pendingStatus = true;
+          const newActive = checked ? 1 : 0;
+          const { createMessage } = useMessage();
+          editUser({ id: record.id, active: newActive })
+            .then(() => {
+              record.active = newActive;
+              createMessage.success('已成功修改用户状态');
+            })
+            .catch(() => {
+              createMessage.error('修改用户状态失败');
+            })
+            .finally(() => {
+              record.pendingStatus = false;
+            });
+        },
       });
     },
   },
