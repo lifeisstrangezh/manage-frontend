@@ -113,7 +113,8 @@ export function useFormEvents({
     fields.forEach((key) => {
       const schema = unref(getSchema).find((item) => item.field === key);
       let value = get(values, key);
-      const hasKey = !!get(values, key);
+      // 用键是否存在来判断，而不是真值判断，否则 0 / '' / false 会被漏掉
+      const hasKey = Reflect.has(values, key);
 
       value = handleInputNumberValue(schema?.component, value);
       const { componentProps } = schema || {};

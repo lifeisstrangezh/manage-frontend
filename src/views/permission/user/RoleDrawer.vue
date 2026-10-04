@@ -38,6 +38,7 @@
     setup(_, { emit }) {
       const isUpdate = ref(true);
       const treeData = ref<TreeItem[]>([]);
+      const record = ref(null)
 
       const [registerForm, { resetFields, setFieldsValue, validate }] = useForm({
         labelWidth: 90,
@@ -47,6 +48,7 @@
       });
 
       const [registerDrawer, { setDrawerProps, closeDrawer }] = useDrawerInner(async (data) => {
+        record.value = data.record ?? {}
         resetFields();
         setDrawerProps({ confirmLoading: false });
         // 需要在setFieldsValue之前先填充treeData，否则Tree组件可能会报key not exist警告
@@ -79,9 +81,10 @@
 
           const update = unref(isUpdate)
           if (update) {
-            const res = await editUser(params)
+            params.id = record.value.id ?? ''
+            await editUser(params)
           } else {
-            const res = await addUser(params)
+            await addUser(params)
           }
 
           closeDrawer();

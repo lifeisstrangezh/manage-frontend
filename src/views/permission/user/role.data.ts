@@ -123,11 +123,11 @@ export const formSchema = (isUpdate): FormSchema[] => {
       field: 'active',
       label: '状态',
       component: 'RadioButtonGroup',
-      defaultValue: '1',
+      defaultValue: 1,
       componentProps: {
         options: [
-          { label: '启用', value: '1' },
-          { label: '停用', value: '0' },
+          { label: '启用', value: 1 },
+          { label: '停用', value: 0 },
         ],
       },
     },
